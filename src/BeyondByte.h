@@ -58,6 +58,8 @@
 
 class BeyondByteClass {
   public:
+    void writeToDevice(uint16_t address, uint8_t data, uint8_t device_to_use);
+    uint8_t readFromDevice(uint16_t address, uint8_t device_to_use);
     void writeWord(uint16_t address, uint16_t data, uint8_t bytes_to_write, uint8_t device_to_use, uint8_t byte_order);
     void writeDword(uint16_t address, uint32_t data, uint8_t bytes_to_write, uint8_t device_to_use, uint8_t byte_order);
     void writeQword( uint16_t address, uint64_t data, uint8_t bytes_to_write, uint8_t device_to_use, uint8_t byte_order);
@@ -68,8 +70,11 @@ class BeyondByteClass {
     uint64_t readQword(uint16_t address, uint8_t bytes_to_read, uint8_t device_to_use, uint8_t byte_order);
     void readToCharArray(uint16_t address, char *data, uint16_t bytes_to_read, uint8_t device_to_use, uint8_t byte_order);
     void readToBinaryArray(uint16_t address, uint8_t *data, uint16_t bytes_to_read, uint8_t device_to_use, uint8_t byte_order);
-    void writeToDevice(uint16_t address, uint8_t data, uint8_t device_to_use);
-    uint8_t readFromDevice(uint16_t address, uint8_t device_to_use);
+    uint16_t transferWord_SPI(uint16_t dataOut, uint8_t bytes_to_transfer, uint8_t byte_order);
+    uint32_t transferDword_SPI(uint32_t dataOut, uint8_t bytes_to_trnasfer, uint8_t byte_order);
+    uint64_t transferQword_SPI(uint64_t dataOut, uint8_t bytes_to_transfer, uint8_t byte_order);
+    void transferCharArray_SPI(char *dataIn, char *dataOut, uint16_t bytes_to_transfer, uint8_t byte_order);
+    void transferBinaryArray_SPI(uint8_t *dataIn, uint8_t *dataOut, uint16_t bytes_to_transfer, uint8_t byte_order);
     volatile bool Timeout = false;
 };
 
@@ -80,6 +85,7 @@ extern BeyondByteClass BeyondByte;
 #elif defined(__AVR_ATmega16U4__) || defined(__AVR_ATmega32U4__) // Serial/Wire/SPI/EEPROM
 #elif defined(ARDUINO_SAMD_ZERO) // Serial/Wire/SPI/EEPROM
 #elif defined(ARDUINO_SAM_DUE) // Serial/Wire/SPI/Aux Serial x3/USB Serial
+#elif defined(_PICO_VERSION_H) // Raspberry Pi Pico
 #else
 #error Unsupported chip, please edit BeyondByte library with corresponding supported hardware functions
 #endif

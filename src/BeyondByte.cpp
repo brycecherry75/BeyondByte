@@ -270,12 +270,12 @@ uint64_t BeyondByteClass::readQword(uint16_t address, uint8_t bytes_to_read, uin
 
 void BeyondByteClass::readToCharArray(uint16_t address, char *data, uint16_t bytes_to_read, uint8_t device_to_use, uint8_t byte_order) {
   if (byte_order == MSBFIRST) {
-    for (int16_t i = 0; i < bytes_to_read; i++) {
+    for (uint16_t i = 0; i < bytes_to_read; i++) {
       data[i] = readFromDevice((address + i), device_to_use);
     } 
   }
   else if (byte_order == LSBFIRST) {
-    for (int16_t i = (bytes_to_read - 1); i >= 0; i--) {
+    for (int32_t i = (bytes_to_read - 1); i >= 0; i--) {
       data[i] = readFromDevice((address + i), device_to_use);
     } 
   }
@@ -283,13 +283,120 @@ void BeyondByteClass::readToCharArray(uint16_t address, char *data, uint16_t byt
 
 void BeyondByteClass::readToBinaryArray(uint16_t address, uint8_t *data, uint16_t bytes_to_read, uint8_t device_to_use, uint8_t byte_order) {
   if (byte_order == MSBFIRST) {
-    for (int16_t i = 0; i < bytes_to_read; i++) {
+    for (uint16_t i = 0; i < bytes_to_read; i++) {
       data[i] = readFromDevice((address + i), device_to_use);
     } 
   }
   else if (byte_order == LSBFIRST) {
-    for (int16_t i = (bytes_to_read - 1); i >= 0; i--) {
+    for (int32_t i = (bytes_to_read - 1); i >= 0; i--) {
       data[i] = readFromDevice((address + i), device_to_use);
+    } 
+  }
+}
+
+uint16_t BeyondByteClass::transferWord_SPI(uint16_t dataOut, uint8_t bytes_to_transfer, uint8_t byte_order) {
+  uint16_t data = 0;
+  if (bytes_to_transfer <= 2) {
+    if (byte_order == MSBFIRST) {
+      for (int16_t i = 0; i < bytes_to_transfer; i++) {
+        uint16_t temp = 0;
+        uint16_t temp2 = data;
+        temp2 >>= (8 * (bytes_to_transfer - 1 - i));
+        temp = SPI.transfer((temp2 & 0xFF));
+        temp <<= (8 * (bytes_to_transfer - 1 - i));
+        data |= temp;
+      }
+    }
+    else if (byte_order == LSBFIRST) {
+      for (int16_t i = (bytes_to_transfer - 1); i >= 0; i--) {
+        uint16_t temp = 0;
+        uint16_t temp2 = data;
+        temp = SPI.transfer((temp2 & 0xFF));
+        temp <<= (8 * (bytes_to_transfer - 1 - i));
+        data |= temp;
+        temp2 >>= 8;
+      }
+    }
+  }
+  return data;
+}
+
+uint32_t BeyondByteClass::transferDword_SPI(uint32_t dataOut, uint8_t bytes_to_transfer, uint8_t byte_order) {
+  uint32_t data = 0;
+  if (bytes_to_transfer <= 2) {
+    if (byte_order == MSBFIRST) {
+      for (int16_t i = 0; i < bytes_to_transfer; i++) {
+        uint32_t temp = 0;
+        uint32_t temp2 = data;
+        temp2 >>= (8 * (bytes_to_transfer - 1 - i));
+        temp = SPI.transfer((temp2 & 0xFF));
+        temp <<= (8 * (bytes_to_transfer - 1 - i));
+        data |= temp;
+      }
+    }
+    else if (byte_order == LSBFIRST) {
+      for (int16_t i = (bytes_to_transfer - 1); i >= 0; i--) {
+        uint32_t temp = 0;
+        uint32_t temp2 = data;
+        temp = SPI.transfer((temp2 & 0xFF));
+        temp <<= (8 * (bytes_to_transfer - 1 - i));
+        data |= temp;
+        temp2 >>= 8;
+      }
+    }
+  }
+  return data;
+}
+
+uint64_t BeyondByteClass::transferQword_SPI(uint64_t dataOut, uint8_t bytes_to_transfer, uint8_t byte_order) {
+  uint64_t data = 0;
+  if (bytes_to_transfer <= 2) {
+    if (byte_order == MSBFIRST) {
+      for (int16_t i = 0; i < bytes_to_transfer; i++) {
+        uint64_t temp = 0;
+        uint64_t temp2 = data;
+        temp2 >>= (8 * (bytes_to_transfer - 1 - i));
+        temp = SPI.transfer((temp2 & 0xFF));
+        temp <<= (8 * (bytes_to_transfer - 1 - i));
+        data |= temp;
+      }
+    }
+    else if (byte_order == LSBFIRST) {
+      for (int16_t i = (bytes_to_transfer - 1); i >= 0; i--) {
+        uint64_t temp = 0;
+        uint64_t temp2 = data;
+        temp = SPI.transfer((temp2 & 0xFF));
+        temp <<= (8 * (bytes_to_transfer - 1 - i));
+        data |= temp;
+        temp2 >>= 8;
+      }
+    }
+  }
+  return data;
+}
+
+void BeyondByteClass::transferCharArray_SPI(char *dataIn, char *dataOut, uint16_t bytes_to_transfer, uint8_t byte_order) {
+  if (byte_order == MSBFIRST) {
+    for (uint16_t i = 0; i < bytes_to_transfer; i++) {
+      dataIn[i] = SPI.transfer(dataOut[i]);
+    } 
+  }
+  else if (byte_order == LSBFIRST) {
+    for (int32_t i = (bytes_to_transfer - 1); i >= 0; i--) {
+      dataIn[i] = SPI.transfer(dataOut[i]);
+    } 
+  }
+}
+
+void BeyondByteClass::transferBinaryArray_SPI(uint8_t *dataIn, uint8_t *dataOut, uint16_t bytes_to_transfer, uint8_t byte_order) {
+  if (byte_order == MSBFIRST) {
+    for (uint16_t i = 0; i < bytes_to_transfer; i++) {
+      dataIn[i] = SPI.transfer(dataOut[i]);
+    } 
+  }
+  else if (byte_order == LSBFIRST) {
+    for (int32_t i = (bytes_to_transfer - 1); i >= 0; i--) {
+      dataIn[i] = SPI.transfer(dataOut[i]);
     } 
   }
 }

@@ -11,6 +11,11 @@ readToCharArray	KEYWORD2
 readToBinaryArray	KEYWORD2
 writeToDevice	KEYWORD2
 readFromDevice	KEYWORD2
+transferWord_SPI	KEYWORD2
+transferDword_SPI	KEYWORD2
+transferQword_SPI	KEYWORD2
+transferCharArray_SPI	KEYWORD2
+transferBinaryArray_SPI	KEYWORD2
 BeyondByte_Serial	LITERAL1
 BeyondByte_Serial1	LITERAL1
 BeyondByte_Serial2	LITERAL1
