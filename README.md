@@ -9,6 +9,8 @@ Revisions:
 
 1.1.0 Added transfer functions for SPI
 
+1.1.1 Corrected transfer functions for SPI
+
 ## Usage
 
 An example program is included in \ProcessingExample
